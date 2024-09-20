@@ -9,6 +9,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -42,54 +43,65 @@ public class ScreenMatchApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		DadosSerie dadosSerie = null;
-		List<DadosTemporada> temporadas = new ArrayList<>();
+//		DadosSerie dadosSerie = null;
+//		List<DadosTemporada> temporadas = new ArrayList<>();
+//
+//		int opcaoMenu = 0;
+//		do {
+//			exibeMenu();
+//			opcaoMenu = scanner.nextInt();
+//			switch (opcaoMenu) {
+//				case OPCAO_MENU_BUSCAR_SERIE_PELO_NOME:
+//				{
+//					System.out.println("Digite o nome da serie desejada");
+//					scanner.nextLine();
+//					String nomeSerie = scanner.nextLine();
+//					urlAPI = ENDERECO + API_KEY + "&t=" + nomeSerie.replace(" ", "+");
+//					json = consumoAPI.getDados(urlAPI);
+//					dadosSerie = converteDados.getDados(json, DadosSerie.class);
+//
+//					temporadas.clear();
+//					for (int idx = 1; idx <= dadosSerie.totalTemporadas(); idx++) {
+//						json = consumoAPI.getDados(urlAPI + "&season=" + idx);
+//						DadosTemporada temporada =converteDados.getDados(json, DadosTemporada.class);
+//						temporadas.add(temporada);
+//					}
+//				}
+//				break;
+//
+//				case OPCAO_MENU_MOSTRAR_DADOS_SERIE:
+//					if (dadosSerie == null) {
+//						System.out.println("Nenhuma série cadastrada!");
+//						break;
+//					}
+//					System.out.println(dadosSerie);
+//					break;
+//
+//				case OPCAO_MENU_MOSTRAR_DADOS_TEMPORADAS:
+//					if (temporadas.size() == 0) {
+//						System.out.println("Nenhuma temporada cadastrada!");
+//						break;
+//					}
+//
+//					for (DadosTemporada temporada : temporadas) {
+//						System.out.println(temporada);
+//						System.out.println();
+//					}
+//
+//					break;
+//			}
+//		}
+//		while (opcaoMenu != OPCAO_MENU_SAIR);
 
-		int opcaoMenu = 0;
-		do {
-			exibeMenu();
-			opcaoMenu = scanner.nextInt();
-			switch (opcaoMenu) {
-				case OPCAO_MENU_BUSCAR_SERIE_PELO_NOME:
-				{
-					System.out.println("Digite o nome da serie desejada");
-					scanner.nextLine();
-					String nomeSerie = scanner.nextLine();
-					urlAPI = ENDERECO + API_KEY + "&t=" + nomeSerie.replace(" ", "+");
-					json = consumoAPI.getDados(urlAPI);
-					dadosSerie = converteDados.getDados(json, DadosSerie.class);
 
-					temporadas.clear();
-					for (int idx = 1; idx <= dadosSerie.totalTemporadas(); idx++) {
-						json = consumoAPI.getDados(urlAPI + "&season=" + idx);
-						DadosTemporada temporada =converteDados.getDados(json, DadosTemporada.class);
-						temporadas.add(temporada);
-					}
-				}
-				break;
+		List<String> nomes = Arrays.asList("Jacque", "Paulo", "Nico", "Iasmin", "Rodrigo", "Nazaré", "Pedro", "Angel", "Nelson");
 
-				case OPCAO_MENU_MOSTRAR_DADOS_SERIE:
-					if (dadosSerie == null) {
-						System.out.println("Nenhuma série cadastrada!");
-						break;
-					}
-					System.out.println(dadosSerie);
-					break;
+		nomes.stream()
+				.sorted()
+				.filter(elemento -> elemento.startsWith("N"))
+				.map(elemento -> elemento.toUpperCase())
+				.limit(3)
+				.forEach(System.out::println);
 
-				case OPCAO_MENU_MOSTRAR_DADOS_TEMPORADAS:
-					if (temporadas.size() == 0) {
-						System.out.println("Nenhuma temporada cadastrada!");
-						break;
-					}
-
-					for (DadosTemporada temporada : temporadas) {
-						System.out.println(temporada);
-						System.out.println();
-					}
-
-					break;
-			}
-		}
-		while (opcaoMenu != OPCAO_MENU_SAIR);
 	}
 }
