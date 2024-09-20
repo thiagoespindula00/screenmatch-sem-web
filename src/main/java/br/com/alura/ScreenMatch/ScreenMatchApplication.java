@@ -16,33 +16,33 @@ import java.util.Scanner;
 @SpringBootApplication
 public class ScreenMatchApplication implements CommandLineRunner {
 
-	private Scanner scanner = new Scanner(System.in);
-	final int OPCAO_MENU_SAIR = 0;
-	final int OPCAO_MENU_BUSCAR_SERIE_PELO_NOME = 1;
-	final int OPCAO_MENU_MOSTRAR_DADOS_SERIE = 2;
-	final int OPCAO_MENU_MOSTRAR_DADOS_TEMPORADAS = 3;
+    private Scanner scanner = new Scanner(System.in);
+    final int OPCAO_MENU_SAIR = 0;
+    final int OPCAO_MENU_BUSCAR_SERIE_PELO_NOME = 1;
+    final int OPCAO_MENU_MOSTRAR_DADOS_SERIE = 2;
+    final int OPCAO_MENU_MOSTRAR_DADOS_TEMPORADAS = 3;
 
-	final String ENDERECO = "https://www.omdbapi.com/?";
-	final String API_KEY = "apikey=6585022c";
-	String urlAPI = "";
-	ConsumoAPI consumoAPI = new ConsumoAPI();
-	ConverteDados converteDados = new ConverteDados();
-	String json = "";
+    final String ENDERECO = "https://www.omdbapi.com/?";
+    final String API_KEY = "apikey=6585022c";
+    String urlAPI = "";
+    ConsumoAPI consumoAPI = new ConsumoAPI();
+    ConverteDados converteDados = new ConverteDados();
+    String json = "";
 
-	public void exibeMenu() {
-		System.out.println(OPCAO_MENU_BUSCAR_SERIE_PELO_NOME + " - Buscar serie pelo nome");
-		System.out.println(OPCAO_MENU_MOSTRAR_DADOS_SERIE + " - Mostrar dados serie");
-		System.out.println(OPCAO_MENU_MOSTRAR_DADOS_TEMPORADAS + " - Mostrar dados temporadas");
-		System.out.println(OPCAO_MENU_SAIR + " - Sair");
-		System.out.println("Digite a opcao desejada");
-	}
+    public void exibeMenu() {
+        System.out.println(OPCAO_MENU_BUSCAR_SERIE_PELO_NOME + " - Buscar serie pelo nome");
+        System.out.println(OPCAO_MENU_MOSTRAR_DADOS_SERIE + " - Mostrar dados serie");
+        System.out.println(OPCAO_MENU_MOSTRAR_DADOS_TEMPORADAS + " - Mostrar dados temporadas");
+        System.out.println(OPCAO_MENU_SAIR + " - Sair");
+        System.out.println("Digite a opcao desejada");
+    }
 
-	public static void main(String[] args) {
-		SpringApplication.run(ScreenMatchApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ScreenMatchApplication.class, args);
+    }
 
-	@Override
-	public void run(String... args) throws Exception {
+    @Override
+    public void run(String... args) throws Exception {
 //		DadosSerie dadosSerie = null;
 //		List<DadosTemporada> temporadas = new ArrayList<>();
 //
@@ -94,14 +94,34 @@ public class ScreenMatchApplication implements CommandLineRunner {
 //		while (opcaoMenu != OPCAO_MENU_SAIR);
 
 
-		List<String> nomes = Arrays.asList("Jacque", "Paulo", "Nico", "Iasmin", "Rodrigo", "Nazaré", "Pedro", "Angel", "Nelson");
+//		List<String> nomes = Arrays.asList("Jacque", "Paulo", "Nico", "Iasmin", "Rodrigo", "Nazaré", "Pedro", "Angel", "Nelson");
+//
+//		nomes.stream()
+//				.sorted()
+//				.filter(elemento -> elemento.startsWith("N"))
+//				.map(elemento -> elemento.toUpperCase())
+//				.limit(3)
+//				.forEach(System.out::println);
 
-		nomes.stream()
-				.sorted()
-				.filter(elemento -> elemento.startsWith("N"))
-				.map(elemento -> elemento.toUpperCase())
-				.limit(3)
-				.forEach(System.out::println);
 
-	}
+        DadosSerie dadosSerie = null;
+        List<DadosTemporada> temporadas = new ArrayList<>();
+        System.out.println("Digite o nome da serie desejada");
+        scanner.nextLine();
+        String nomeSerie = scanner.nextLine();
+        urlAPI = ENDERECO + API_KEY + "&t=" + nomeSerie.replace(" ", "+");
+        json = consumoAPI.getDados(urlAPI);
+        System.out.println("deu boa");
+        dadosSerie = converteDados.getDados(json, DadosSerie.class);
+
+        for (int idx = 1; idx <= dadosSerie.totalTemporadas(); idx++) {
+            json = consumoAPI.getDados(urlAPI + "&season=" + idx);
+            DadosTemporada temporada = converteDados.getDados(json, DadosTemporada.class);
+            temporadas.add(temporada);
+        }
+
+
+        //temporadas.forEach(t -> t.episodios().forEach(e -> System.out.println(e.titulo())));
+
+    }
 }
