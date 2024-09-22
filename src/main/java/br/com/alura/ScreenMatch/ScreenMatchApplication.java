@@ -1,17 +1,21 @@
 package br.com.alura.ScreenMatch;
 
+import br.com.alura.ScreenMatch.model.DadosEpisodio;
 import br.com.alura.ScreenMatch.model.DadosSerie;
 import br.com.alura.ScreenMatch.model.DadosTemporada;
+import br.com.alura.ScreenMatch.model.Episodio;
 import br.com.alura.ScreenMatch.service.ConsumoAPI;
 import br.com.alura.ScreenMatch.service.ConverteDados;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @SpringBootApplication
 public class ScreenMatchApplication implements CommandLineRunner {
@@ -106,9 +110,8 @@ public class ScreenMatchApplication implements CommandLineRunner {
 
         DadosSerie dadosSerie = null;
         List<DadosTemporada> temporadas = new ArrayList<>();
-        System.out.println("Digite o nome da serie desejada");
-        scanner.nextLine();
-        String nomeSerie = scanner.nextLine();
+        // System.out.println("Digite o nome da serie desejada");
+        String nomeSerie = "Game of Thrones"; //scanner.nextLine();
         urlAPI = ENDERECO + API_KEY + "&t=" + nomeSerie.replace(" ", "+");
         json = consumoAPI.getDados(urlAPI);
         System.out.println("deu boa");
@@ -121,7 +124,44 @@ public class ScreenMatchApplication implements CommandLineRunner {
         }
 
 
-        //temporadas.forEach(t -> t.episodios().forEach(e -> System.out.println(e.titulo())));
+        // temporadas.forEach(t -> t.episodios().forEach(e -> System.out.println(e.titulo())));
+
+        // Joga todos os espisodios dentro do listTodosEpisodios
+        List<DadosEpisodio> listaTodosEpisodios = temporadas.stream()
+                .flatMap(t -> t.episodios().stream())
+                .toList(); // Transforma em lista e não deixa adicionar novos elementos dentro da lista
+
+        System.out.println("Top 5 episodios");
+        listaTodosEpisodios.stream()
+                .filter(e-> !e.avaliacao().equalsIgnoreCase("N/A"))
+                .sorted(Comparator.comparing(DadosEpisodio::avaliacao).reversed())
+                .limit(5)
+                .forEach(System.out::println);
+
+        System.out.println();
+
+        // Transformando os DadosEpisodio em Episodio (o .map aparentemente faz isso, ele transforma os dados)
+        List<Episodio> episodios = temporadas.stream()
+                .flatMap(t-> t.episodios().stream()
+                        .map(dadosEpisodio -> new Episodio(t.numero(), dadosEpisodio)))
+                .toList();
+
+        episodios.forEach(System.out::println);
+
+        System.out.println("Filtrar a partir do ano:");
+        var ano = scanner.nextInt();
+        scanner.nextLine();
+
+        LocalDate dataBusca = LocalDate.of(ano, Month.JANUARY, 1);
+        episodios.stream()
+                .filter(e-> e.getDataLancamento() != null && e.getDataLancamento().isAfter(dataBusca))
+                .forEach(e -> {
+                    System.out.println(
+                            "Temporada: " + e.getTemporada() +
+                            " Episodio: " + e.getNumero() +
+                            " Data lançamento: " + e.getDataLancamento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                    );
+                });
 
     }
 }

@@ -9,11 +9,11 @@ public record DadosEpisodio(@JsonAlias("Title") String titulo,
                             @JsonAlias("imdbRating") String avaliacao,
                             @JsonAlias("Released") String dataLancamento) {
 
-    @Override
-    public String toString() {
-        return "Titulo Episodio: " + this.titulo() + "\n" +
-                "Numero: " + this.numero() + "\n" +
-                "Avalicao: " + this.avaliacao() + "\n" +
-                "Data lancamento: " + this.dataLancamento();
-    }
+//    @Override
+//    public String toString() {
+//        return "Titulo Episodio: " + this.titulo() + "\n" +
+//                "Numero: " + this.numero() + "\n" +
+//                "Avalicao: " + this.avaliacao() + "\n" +
+//                "Data lancamento: " + this.dataLancamento();
+//    }
 }
