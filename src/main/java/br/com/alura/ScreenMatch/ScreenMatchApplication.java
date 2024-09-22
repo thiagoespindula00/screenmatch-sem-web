@@ -131,37 +131,42 @@ public class ScreenMatchApplication implements CommandLineRunner {
                 .flatMap(t -> t.episodios().stream())
                 .toList(); // Transforma em lista e não deixa adicionar novos elementos dentro da lista
 
-        System.out.println("Top 5 episodios");
+        System.out.println("Top 10 episodios");
         listaTodosEpisodios.stream()
                 .filter(e-> !e.avaliacao().equalsIgnoreCase("N/A"))
+                .peek(e-> System.out.println("Primeiro filtro (N/A) " + e))
                 .sorted(Comparator.comparing(DadosEpisodio::avaliacao).reversed())
-                .limit(5)
+                .peek(e-> System.out.println("Ordenado " + e))
+                .limit(10)
+                .peek(e-> System.out.println("Limite " + e))
+                .map(e -> e.titulo().toUpperCase())
+                .peek(e-> System.out.println("Mapeamento " + e))
                 .forEach(System.out::println);
 
-        System.out.println();
-
-        // Transformando os DadosEpisodio em Episodio (o .map aparentemente faz isso, ele transforma os dados)
-        List<Episodio> episodios = temporadas.stream()
-                .flatMap(t-> t.episodios().stream()
-                        .map(dadosEpisodio -> new Episodio(t.numero(), dadosEpisodio)))
-                .toList();
-
-        episodios.forEach(System.out::println);
-
-        System.out.println("Filtrar a partir do ano:");
-        var ano = scanner.nextInt();
-        scanner.nextLine();
-
-        LocalDate dataBusca = LocalDate.of(ano, Month.JANUARY, 1);
-        episodios.stream()
-                .filter(e-> e.getDataLancamento() != null && e.getDataLancamento().isAfter(dataBusca))
-                .forEach(e -> {
-                    System.out.println(
-                            "Temporada: " + e.getTemporada() +
-                            " Episodio: " + e.getNumero() +
-                            " Data lançamento: " + e.getDataLancamento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-                    );
-                });
+//        System.out.println();
+//
+//        // Transformando os DadosEpisodio em Episodio (o .map aparentemente faz isso, ele transforma os dados)
+//        List<Episodio> episodios = temporadas.stream()
+//                .flatMap(t-> t.episodios().stream()
+//                        .map(dadosEpisodio -> new Episodio(t.numero(), dadosEpisodio)))
+//                .toList();
+//
+//        episodios.forEach(System.out::println);
+//
+//        System.out.println("Filtrar a partir do ano:");
+//        var ano = scanner.nextInt();
+//        scanner.nextLine();
+//
+//        LocalDate dataBusca = LocalDate.of(ano, Month.JANUARY, 1);
+//        episodios.stream()
+//                .filter(e-> e.getDataLancamento() != null && e.getDataLancamento().isAfter(dataBusca))
+//                .forEach(e -> {
+//                    System.out.println(
+//                            "Temporada: " + e.getTemporada() +
+//                            " Episodio: " + e.getNumero() +
+//                            " Data lançamento: " + e.getDataLancamento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+//                    );
+//                });
 
     }
 }
