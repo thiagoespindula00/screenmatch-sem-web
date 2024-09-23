@@ -150,18 +150,18 @@ public class ScreenMatchApplication implements CommandLineRunner {
                 .flatMap(t-> t.episodios().stream()
                         .map(dadosEpisodio -> new Episodio(t.numero(), dadosEpisodio)))
                 .toList();
-
-        episodios.forEach(System.out::println);
-
-        System.out.println();
-        Optional<Episodio> episodioBuscado = episodios.stream()
-                .filter(episodio -> episodio.getTitulo().toLowerCase().contains("bastards"))
-                .findFirst();
-
-        if (episodioBuscado.isPresent()) {
-            System.out.println("Episodio encontrado");
-            System.out.println(episodioBuscado.get());
-        }
+//
+//        episodios.forEach(System.out::println);
+//
+//        System.out.println();
+//        Optional<Episodio> episodioBuscado = episodios.stream()
+//                .filter(episodio -> episodio.getTitulo().toLowerCase().contains("bastards"))
+//                .findFirst();
+//
+//        if (episodioBuscado.isPresent()) {
+//            System.out.println("Episodio encontrado");
+//            System.out.println(episodioBuscado.get());
+//        }
 //
 //        System.out.println("Filtrar a partir do ano:");
 //        var ano = scanner.nextInt();
@@ -178,5 +178,12 @@ public class ScreenMatchApplication implements CommandLineRunner {
 //                    );
 //                });
 
+        // Criando um map que a chave é o número da temporada e o valor é a média de avaliação dos episódios
+        Map<Integer, Double> avaliacoesPorTemporada = episodios.stream()
+                .filter(e-> e.getAvaliacao() > 0d)
+                .collect(Collectors.groupingBy(Episodio::getTemporada,
+                        Collectors.averagingDouble(Episodio::getAvaliacao))); // averagindDouble faz a média
+
+        System.out.println(avaliacoesPorTemporada);
     }
 }
