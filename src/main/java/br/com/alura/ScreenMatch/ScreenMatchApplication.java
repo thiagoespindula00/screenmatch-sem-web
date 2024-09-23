@@ -185,5 +185,14 @@ public class ScreenMatchApplication implements CommandLineRunner {
                         Collectors.averagingDouble(Episodio::getAvaliacao))); // averagindDouble faz a média
 
         System.out.println(avaliacoesPorTemporada);
+
+        DoubleSummaryStatistics est = episodios.stream()
+                .filter(e-> e.getAvaliacao() > 0d)
+                .collect(Collectors.summarizingDouble(Episodio::getAvaliacao));
+
+        System.out.println("Media: " + est.getAverage() +
+                           " Pior avaliacao: " + est.getMin() +
+                           " Melhor avaliacao: " + est.getMax() +
+                           " Quantidade: " + est.getCount());
     }
 }
