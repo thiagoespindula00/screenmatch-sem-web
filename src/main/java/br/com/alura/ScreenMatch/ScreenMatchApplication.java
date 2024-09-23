@@ -131,27 +131,37 @@ public class ScreenMatchApplication implements CommandLineRunner {
                 .flatMap(t -> t.episodios().stream())
                 .toList(); // Transforma em lista e não deixa adicionar novos elementos dentro da lista
 
-        System.out.println("Top 10 episodios");
-        listaTodosEpisodios.stream()
-                .filter(e-> !e.avaliacao().equalsIgnoreCase("N/A"))
-                .peek(e-> System.out.println("Primeiro filtro (N/A) " + e))
-                .sorted(Comparator.comparing(DadosEpisodio::avaliacao).reversed())
-                .peek(e-> System.out.println("Ordenado " + e))
-                .limit(10)
-                .peek(e-> System.out.println("Limite " + e))
-                .map(e -> e.titulo().toUpperCase())
-                .peek(e-> System.out.println("Mapeamento " + e))
-                .forEach(System.out::println);
+//        System.out.println("Top 10 episodios");
+//        listaTodosEpisodios.stream()
+//                .filter(e-> !e.avaliacao().equalsIgnoreCase("N/A"))
+//                .peek(e-> System.out.println("Primeiro filtro (N/A) " + e))
+//                .sorted(Comparator.comparing(DadosEpisodio::avaliacao).reversed())
+//                .peek(e-> System.out.println("Ordenado " + e))
+//                .limit(10)
+//                .peek(e-> System.out.println("Limite " + e))
+//                .map(e -> e.titulo().toUpperCase())
+//                .peek(e-> System.out.println("Mapeamento " + e))
+//                .forEach(System.out::println);
 
 //        System.out.println();
 //
 //        // Transformando os DadosEpisodio em Episodio (o .map aparentemente faz isso, ele transforma os dados)
-//        List<Episodio> episodios = temporadas.stream()
-//                .flatMap(t-> t.episodios().stream()
-//                        .map(dadosEpisodio -> new Episodio(t.numero(), dadosEpisodio)))
-//                .toList();
-//
-//        episodios.forEach(System.out::println);
+        List<Episodio> episodios = temporadas.stream()
+                .flatMap(t-> t.episodios().stream()
+                        .map(dadosEpisodio -> new Episodio(t.numero(), dadosEpisodio)))
+                .toList();
+
+        episodios.forEach(System.out::println);
+
+        System.out.println();
+        Optional<Episodio> episodioBuscado = episodios.stream()
+                .filter(episodio -> episodio.getTitulo().toLowerCase().contains("bastards"))
+                .findFirst();
+
+        if (episodioBuscado.isPresent()) {
+            System.out.println("Episodio encontrado");
+            System.out.println(episodioBuscado.get());
+        }
 //
 //        System.out.println("Filtrar a partir do ano:");
 //        var ano = scanner.nextInt();
