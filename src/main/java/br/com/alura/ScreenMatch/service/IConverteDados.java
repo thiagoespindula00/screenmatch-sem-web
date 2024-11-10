@@ -1,5 +1,7 @@
 package br.com.alura.ScreenMatch.service;
 
 public interface IConverteDados {
-    public <T> T getDados(String json, Class<T> classe);
+    public static <T> T getDados(String json, Class<T> classe) {
+        return null;
+    }
 }
